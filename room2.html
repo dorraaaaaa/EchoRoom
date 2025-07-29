@@ -2,126 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Bus Stop – EchoRooms</title>
+  <title>🚌 The Bus Stop</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background: url('https://images.unsplash.com/photo-1544198365-3a5d3a1be9b5?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-      color: white;
+      background-color: #1a1a1a;
+      color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-shadow: 1px 1px 2px black;
-      overflow: hidden;
+      padding: 40px;
+      line-height: 1.6;
     }
 
-    #overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 0;
+    #story {
+      max-width: 600px;
+      margin: auto;
     }
 
-    #text {
-      z-index: 1;
-      padding: 20px;
-      text-align: center;
-      max-width: 700px;
-      font-size: 1.4em;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 12px;
-    }
-
-    #choices {
-      margin-top: 20px;
-      display: none;
-    }
-
-    button {
-      background-color: #444;
-      color: white;
+    .choice {
+      display: block;
+      margin: 20px 0;
+      padding: 12px 20px;
+      background: #ff99bb;
       border: none;
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1em;
+      border-radius: 10px;
+      color: #000;
+      font-weight: bold;
       cursor: pointer;
-      border-radius: 8px;
       transition: background 0.3s;
     }
 
-    button:hover {
-      background-color: #666;
+    .choice:hover {
+      background: #ff77aa;
     }
 
-    /* Pluie légère en overlay */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://i.gifer.com/7VE.gif') repeat;
-      opacity: 0.08;
-      z-index: 0;
-      pointer-events: none;
+    .back-link {
+      display: block;
+      margin-top: 40px;
+      text-align: center;
+      color: #ff99bb;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div id="overlay"></div>
-
-  <audio src="sad-music.mp3" autoplay loop></audio>
-  <audio src="bus-stop-voice.mp3" autoplay></audio>
-
-  <div id="text">Loading...</div>
-
-  <div id="choices">
-    <button onclick="choose('call')">Call her back</button>
-    <button onclick="choose('stay')">Stay silent</button>
+  <div id="story">
+    <p>The streetlamp flickers above. You look up. Then down. Then close your eyes.</p>
+    <p>A shadow approaches and sits beside you.</p>
+    <p>What do you do?</p>
+    <button class="choice" onclick="next('talk')">Say something.</button>
+    <button class="choice" onclick="next('silent')">Stay silent.</button>
   </div>
 
+  <a href="menu.html" class="back-link">← Back to menu</a>
+
   <script>
-    const lines = [
-      "You hide your backpack behind the bench. It still smells like home.",
-      "The wind cuts through your hoodie. You pull it tighter.",
-      "A couple passes by. They don’t see you. You look away.",
-      "Your stomach growls, but you stay quiet.",
-      "The shelter closes in 30 minutes. You might not make it.",
-      "The streetlamp flickers. You count how many nights you've been here.",
-      "You stop at eleven.",
-      "You see a woman drop a dollar bill as she walks by.",
-      "What do you do?"
-    ];
-
-    const textElement = document.getElementById("text");
-    const choices = document.getElementById("choices");
-
-    let index = 0;
-
-    function showNextLine() {
-      if (index < lines.length - 1) {
-        textElement.innerText = lines[index];
-        index++;
-        setTimeout(showNextLine, 3500);
-      } else {
-        textElement.innerText = lines[index];
-        choices.style.display = 'block';
+    function next(choice) {
+      const story = document.getElementById("story");
+      if (choice === "talk") {
+        story.innerHTML = `
+          <p>You whisper, "Cold night, huh?"</p>
+          <p>The figure nods slowly. “Colder than usual.”</p>
+          <p>They hand you a folded note. It reads: <em>“We’re all waiting for something.”</em></p>
+          <p>You blink, and they’re gone.</p>
+        `;
+      } else if (choice === "silent") {
+        story.innerHTML = `
+          <p>You stay quiet.</p>
+          <p>The figure stands after a minute, drops something by your feet, and walks away.</p>
+          <p>It’s a photo of you — but taken from behind, just minutes ago.</p>
+        `;
       }
     }
-
-    function choose(option) {
-      choices.style.display = 'none';
-      if (option === 'call') {
-        textElement.innerText = "You call out. She turns, surprised, and smiles. It's the first smile you've seen today.";
-      } else {
-        textElement.innerText = "You stay silent. The dollar dances in the wind, then disappears down the street.";
-      }
-    }
-
-    showNextLine();
   </script>
 </body>
 </html>
