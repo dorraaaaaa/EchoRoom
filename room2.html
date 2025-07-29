@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Bus Stop - EchoRooms</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1508779018996-601e37aa25d7?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.7);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>🚍 The Bus Stop</h1>
+    <p id="storyText">
+      It's 3:12 AM. Cold breeze hits your face. You tighten your hoodie and tuck your backpack behind the bench.
+      <br/><br/>
+      You try to look like you're just waiting.
+    </p>
+    <button onclick="nextPart()">▶ Continue</button>
+  </div>
+
+  <audio id="busAudio" autoplay>
+    <source src="https://cdn.pixabay.com/audio/2023/04/05/audio_3953d94f9e.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const storyLines = [
+      "You haven't eaten since yesterday. The vending machine is cracked. No coins anyway.",
+      "You check your phone — 2% battery. No new messages. Still none.",
+      "You whisper to yourself, 'Just one night. Just get through one more night.'",
+      "Someone walks by. You pretend to scroll. Your screen is black.",
+      "The streetlamp flickers above. You look up. Then down. Then close your eyes."
+    ];
+
+    let currentLine = 0;
+
+    function nextPart() {
+      const textBox = document.getElementById("storyText");
+      if (currentLine < storyLines.length) {
+        textBox.innerHTML += "<br/><br/>" + storyLines[currentLine];
+        currentLine++;
+      } else {
+        window.location.href = "final-message.html"; // Or show end message
+      }
+    }
+  </script>
+</body>
+</html>
