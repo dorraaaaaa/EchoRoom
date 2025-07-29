@@ -2,78 +2,126 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Bus Stop Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Bus Stop – EchoRooms</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: "Segoe UI", sans-serif;
-      background: url('https://images.unsplash.com/photo-1603295193655-28c23379e6f4?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
-      background-size: cover;
+      background: url('https://images.unsplash.com/photo-1544198365-3a5d3a1be9b5?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
       color: white;
-      text-shadow: 1px 1px 4px #000;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      flex-direction: column;
+      text-shadow: 1px 1px 2px black;
+      overflow: hidden;
     }
 
-    #text-box {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 30px;
-      max-width: 600px;
-      border-radius: 12px;
-      font-size: 1.2em;
+    #overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 0;
+    }
+
+    #text {
+      z-index: 1;
+      padding: 20px;
       text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      max-width: 700px;
+      font-size: 1.4em;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
     }
 
-    a {
-      color: white;
+    #choices {
       margin-top: 20px;
-      display: inline-block;
-      background: #e481a3;
+      display: none;
+    }
+
+    button {
+      background-color: #444;
+      color: white;
+      border: none;
       padding: 10px 20px;
+      margin: 10px;
+      font-size: 1em;
+      cursor: pointer;
       border-radius: 8px;
-      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #666;
+    }
+
+    /* Pluie légère en overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://i.gifer.com/7VE.gif') repeat;
+      opacity: 0.08;
+      z-index: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div id="text-box"></div>
+  <div id="overlay"></div>
+
+  <audio src="sad-music.mp3" autoplay loop></audio>
+  <audio src="bus-stop-voice.mp3" autoplay></audio>
+
+  <div id="text">Loading...</div>
+
+  <div id="choices">
+    <button onclick="choose('call')">Call her back</button>
+    <button onclick="choose('stay')">Stay silent</button>
+  </div>
 
   <script>
     const lines = [
-      "You hide your backpack behind the bench.",
-      "The wind is colder tonight.",
-      "Someone walks by, doesn’t look at you.",
-      "You hope the shelter isn’t full.",
-      "The streetlamp flickers above. You look up. Then down. Then close your eyes."
+      "You hide your backpack behind the bench. It still smells like home.",
+      "The wind cuts through your hoodie. You pull it tighter.",
+      "A couple passes by. They don’t see you. You look away.",
+      "Your stomach growls, but you stay quiet.",
+      "The shelter closes in 30 minutes. You might not make it.",
+      "The streetlamp flickers. You count how many nights you've been here.",
+      "You stop at eleven.",
+      "You see a woman drop a dollar bill as she walks by.",
+      "What do you do?"
     ];
 
-    let i = 0;
-    function showLine() {
-      if (i < lines.length) {
-        const textBox = document.getElementById("text-box");
-        const p = document.createElement("p");
-        p.textContent = lines[i];
-        textBox.appendChild(p);
-        i++;
-        setTimeout(showLine, 3000); // 3 sec delay
+    const textElement = document.getElementById("text");
+    const choices = document.getElementById("choices");
+
+    let index = 0;
+
+    function showNextLine() {
+      if (index < lines.length - 1) {
+        textElement.innerText = lines[index];
+        index++;
+        setTimeout(showNextLine, 3500);
       } else {
-        const endMessage = document.createElement("div");
-        endMessage.innerHTML = `
-          <div style="margin-top: 40px; font-size: 1.2em;">
-            🕊️ You’ve stepped into a life that’s not yours… but now you’ve felt it.
-          </div>
-          <a href="menu.html">← Back to rooms</a>
-        `;
-        document.getElementById("text-box").appendChild(endMessage);
+        textElement.innerText = lines[index];
+        choices.style.display = 'block';
       }
     }
 
-    window.onload = showLine;
+    function choose(option) {
+      choices.style.display = 'none';
+      if (option === 'call') {
+        textElement.innerText = "You call out. She turns, surprised, and smiles. It's the first smile you've seen today.";
+      } else {
+        textElement.innerText = "You stay silent. The dollar dances in the wind, then disappears down the street.";
+      }
+    }
+
+    showNextLine();
   </script>
 </body>
 </html>
