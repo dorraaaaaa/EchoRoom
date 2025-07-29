@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Senior's Room</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="room" style="background-image: url('assets/images/senior.jpg')">
+  <audio autoplay loop src="assets/audio/ambiance.mp3"></audio>
+
+  <div class="overlay">
+    <div class="story-box">
+      <p>You sit by the window. The clock ticks... but no one's called.</p>
+      <button onclick="nextMessage()">What do you do?</button>
+      <div id="choices" style="display:none;">
+        <button>Call someone</button>
+        <button>Go back to sleep</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
