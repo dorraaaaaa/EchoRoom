@@ -5,16 +5,17 @@
   <title>🚌 The Bus Stop</title>
   <style>
     body {
-      background-color: #1a1a1a;
+      background-color: #111;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
       padding: 40px;
-      line-height: 1.6;
     }
 
     #story {
       max-width: 600px;
       margin: auto;
+      font-size: 1.1em;
+      line-height: 1.6;
     }
 
     .choice {
@@ -26,8 +27,8 @@
       border-radius: 10px;
       color: #000;
       font-weight: bold;
+      font-size: 1em;
       cursor: pointer;
-      transition: background 0.3s;
     }
 
     .choice:hover {
@@ -48,30 +49,29 @@
     <p>The streetlamp flickers above. You look up. Then down. Then close your eyes.</p>
     <p>A shadow approaches and sits beside you.</p>
     <p>What do you do?</p>
-    <button class="choice" onclick="next('talk')">Say something.</button>
-    <button class="choice" onclick="next('silent')">Stay silent.</button>
+    <button class="choice" id="talkBtn">Say something.</button>
+    <button class="choice" id="silentBtn">Stay silent.</button>
   </div>
 
   <a href="menu.html" class="back-link">← Back to menu</a>
 
   <script>
-    function next(choice) {
-      const story = document.getElementById("story");
-      if (choice === "talk") {
-        story.innerHTML = `
-          <p>You whisper, "Cold night, huh?"</p>
-          <p>The figure nods slowly. “Colder than usual.”</p>
-          <p>They hand you a folded note. It reads: <em>“We’re all waiting for something.”</em></p>
-          <p>You blink, and they’re gone.</p>
-        `;
-      } else if (choice === "silent") {
-        story.innerHTML = `
-          <p>You stay quiet.</p>
-          <p>The figure stands after a minute, drops something by your feet, and walks away.</p>
-          <p>It’s a photo of you — but taken from behind, just minutes ago.</p>
-        `;
-      }
-    }
+    document.getElementById("talkBtn").addEventListener("click", function () {
+      document.getElementById("story").innerHTML = `
+        <p>You whisper, "Cold night, huh?"</p>
+        <p>The figure nods slowly. “Colder than usual.”</p>
+        <p>They hand you a folded note. It reads: <em>“We’re all waiting for something.”</em></p>
+        <p>You blink, and they’re gone.</p>
+      `;
+    });
+
+    document.getElementById("silentBtn").addEventListener("click", function () {
+      document.getElementById("story").innerHTML = `
+        <p>You stay quiet.</p>
+        <p>The figure stands after a minute, drops something by your feet, and walks away.</p>
+        <p>It’s a photo of you — but taken from behind, just minutes ago.</p>
+      `;
+    });
   </script>
 </body>
 </html>
