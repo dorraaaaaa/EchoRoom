@@ -1,24 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>The Senior's Room</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>👵 Seniors Room – EchoRooms</title>
+  <style>
+    body {
+      background-color: #fff0f5;
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #c94f7c;
+      margin-bottom: 20px;
+    }
+
+    #story p {
+      font-size: 1.3em;
+      margin-bottom: 20px;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    button {
+      background-color: #f8c1d9;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #f4a6c2;
+    }
+  </style>
 </head>
-<body class="room" style="background-image: url('assets/images/senior.jpg')">
-  <audio autoplay loop src="assets/audio/ambiance.mp3"></audio>
+<body>
 
-  <div class="overlay">
-    <div class="story-box">
-      <p>You sit by the window. The clock ticks... but no one's called.</p>
-      <button onclick="nextMessage()">What do you do?</button>
-      <div id="choices" style="display:none;">
-        <button>Call someone</button>
-        <button>Go back to sleep</button>
-      </div>
-    </div>
-  </div>
+  <h1>👵 The Seniors Room</h1>
+  <div id="story"></div>
 
-  <script src="script.js"></script>
+  <script>
+    const story = [
+      {
+        text: "You wake up in a quiet apartment. The ticking clock is the only sound.",
+        choices: [
+          { text: "Call someone", next: 1 },
+          { text: "Go back to sleep", next: 2 }
+        ]
+      },
+      {
+        text: "You pick up the phone... but no one answers. Silence.",
+        choices: [
+          { text: "Try again", next: 3 },
+          { text: "Put the phone down", next: 4 }
+        ]
+      },
+      {
+        text: "You drift back to sleep, wrapped in old memories.",
+        choices: [
+          { text: "Wake up again", next: 4 }
+        ]
+      },
+      {
+        text: "Still no answer. You sigh. Maybe tomorrow.",
+        choices: [
+          { text: "Look outside", next: 4 }
+        ]
+      },
+      {
+        text: "You stare at the window. Another quiet day begins.",
+        choices: []
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function showStep(index) {
+      const container = document.getElementById("story");
+      container.innerHTML = "";
+
+      const step = story[index];
+
+      const paragraph = document.createElement("p");
+      paragraph.textContent = step.text;
+      container.appendChild(paragraph);
+
+      step.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice.text;
+        btn.onclick = () => showStep(choice.next);
+        container.appendChild(btn);
+      });
+    }
+
+    window.onload = () => {
+      showStep(currentIndex);
+    };
+  </script>
+
 </body>
 </html>
