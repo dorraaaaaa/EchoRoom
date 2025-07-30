@@ -1,153 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Senior's Room – EchoRooms</title>
+  <meta charset="UTF-8">
+  <title>EchoRooms – The Senior's Room</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Georgia', serif;
-      background: linear-gradient(to bottom, #fbeff2, #e6d5e0);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #fdf6f8, #e7dce4);
       color: #333;
-      overflow-x: hidden;
+      margin: 0;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
     }
-    .container {
+
+    h1 {
+      color: #b64275;
+      font-size: 2.8em;
+      margin-bottom: 30px;
+    }
+
+    p {
+      font-size: 1.3em;
+      line-height: 1.6;
       max-width: 700px;
-      margin: 80px auto;
-      padding: 20px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 15px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      transition: all 1s ease-in-out;
+      margin: 0 auto 30px;
     }
-    .fade {
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }
-    .fade.visible {
-      opacity: 1;
-    }
+
     button {
-      padding: 12px 25px;
       background-color: #cc6699;
       color: white;
-      font-size: 1em;
       border: none;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 1.1em;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
-      transition: background 0.3s;
+      transition: background-color 0.3s;
     }
+
     button:hover {
-      background-color: #b84d84;
+      background-color: #b94d88;
     }
-    .end-actions ul {
+
+    #solution-section {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #f3edf1;
+      border-radius: 15px;
+      margin-top: 40px;
+      animation: fadeIn 2s ease-in;
+    }
+
+    ul {
       list-style: none;
       padding: 0;
+      font-size: 1.1em;
     }
-    .end-actions li {
-      background: #f0e6f0;
-      padding: 10px 15px;
-      margin: 10px 0;
-      border-radius: 8px;
+
+    ul li {
+      margin: 12px 0;
+    }
+
+    ul li a {
+      color: #007B88;
+      text-decoration: none;
+    }
+
+    ul li a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <audio id="bgm" loop autoplay>
-    <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_d2a6b1c795.mp3" type="audio/mp3">
+
+  <!-- 🎵 Musique de fond -->
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_96fc0be02d.mp3?filename=soft-piano-ambient-11273.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
-  <div class="container fade" id="scene">
-    <p id="text">You wake up to the ticking of the clock. It's 7:03 AM. The apartment is quiet. Too quiet.</p>
-    <div id="choices"></div>
+  <h1>👵 The Senior’s Room</h1>
+
+  <p>
+    You wake up alone. It's been days since anyone called.<br>
+    The photo frames on the shelf smile back at you, frozen in time.<br>
+    You shuffle to the kitchen — the silence is loud.<br><br>
+    What do you do?
+  </p>
+
+  <button onclick="showStory('call')">📞 Call someone</button>
+  <button onclick="showStory('sleep')">😴 Go back to sleep</button>
+
+  <div id="story-result"></div>
+
+  <div id="solution-section">
+    <h2 style="color: #4CAF50;">🌱 You Can Help</h2>
+    <p>Even a small gesture can break someone's isolation. Here's how:</p>
+    <ul>
+      <li><a href="https://www.alz.org" target="_blank">🧠 Support Alzheimer's Care</a></li>
+      <li><a href="https://www.make-a-call.org" target="_blank">📞 Make a Call to an Isolated Elder</a></li>
+      <li><a href="https://www.volunteerworld.com" target="_blank">🌍 Become a Volunteer Near You</a></li>
+    </ul>
   </div>
 
   <script>
-    const scene = document.getElementById('scene');
-    const text = document.getElementById('text');
-    const choices = document.getElementById('choices');
+    function showStory(choice) {
+      const result = document.getElementById('story-result');
+      let text = '';
 
-    const story = [
-      {
-        text: "You sit on the edge of the bed, staring at a picture frame on the wall. It's your family. Taken 12 years ago.",
-        choices: ["Stand up", "Lie back down"]
-      },
-      {
-        text: "You shuffle slowly to the kitchen. The fridge hums. A post-it note says: \"Doctor's appointment - next Tuesday.\"",
-        choices: ["Make tea", "Check the window"]
-      },
-      {
-        text: "Outside, the street is quiet. Children laugh faintly in the distance. You smile — then realize they’re not yours.",
-        choices: ["Wave anyway", "Close the curtain"]
-      },
-      {
-        text: "You sit in your old rocking chair. You remember stories, faces, names. Some are fading. Some stay. Always."
-      },
-      {
-        text: "You want to talk. But no one's called. Not today. Not yesterday. You think of calling someone... but hesitate.",
-        choices: ["Call someone", "Go back to sleep"]
-      },
-      {
-        text: "You call. A warm voice answers. \"Grandma? Is that you?\" You smile, eyes wet. Just for a moment, you’re not alone."
-      },
-      {
-        text: "You decide to go back to sleep. Maybe you’ll dream of better times. Maybe you won’t wake up. You don’t know which feels better."
-      },
-      {
-        text: "You’ve just spent a few minutes in the skin of someone forgotten. But they exist. Right now. And they need us."
+      if (choice === 'call') {
+        text = `<p>You dial a number. A familiar voice answers — surprise, warmth, connection. 
+                A five-minute chat becomes the best moment of your week. 
+                Sometimes, reaching out brings healing.</p>`;
+      } else {
+        text = `<p>You lay back in bed. Outside, life moves on. 
+                Inside, the loneliness wraps tighter. You deserve more. 
+                Maybe tomorrow, you'll try again.</p>`;
       }
-    ];
 
-    let index = 0;
+      result.innerHTML = text;
 
-    function showScene(i) {
-      scene.classList.remove('visible');
+      // Afficher les solutions après 4 secondes
       setTimeout(() => {
-        text.textContent = story[i].text;
-        choices.innerHTML = '';
-
-        if (story[i].choices) {
-          story[i].choices.forEach(choice => {
-            const btn = document.createElement('button');
-            btn.textContent = choice;
-            btn.onclick = () => {
-              index++;
-              showScene(index);
-            };
-            choices.appendChild(btn);
-          });
-        } else if (i === story.length - 1) {
-          const endDiv = document.createElement('div');
-          endDiv.className = 'end-actions';
-          endDiv.innerHTML = `
-            <h3>What can you do?</h3>
-            <ul>
-              <li>📞 Call a grandparent or elderly neighbor today.</li>
-              <li>🧓 Volunteer at a retirement home once a month.</li>
-              <li>📢 Share this story to raise awareness.</li>
-            </ul>
-          `;
-          choices.appendChild(endDiv);
-        } else {
-          const btn = document.createElement('button');
-          btn.textContent = "Continue";
-          btn.onclick = () => {
-            index++;
-            showScene(index);
-          };
-          choices.appendChild(btn);
-        }
-
-        scene.classList.add('visible');
-      }, 600);
+        document.getElementById('solution-section').style.display = 'block';
+      }, 4000);
     }
-
-    window.onload = () => {
-      showScene(index);
-    };
   </script>
+
 </body>
 </html>
