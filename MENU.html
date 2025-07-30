@@ -4,14 +4,28 @@
 <head>
   <meta charset="UTF-8" />
   <title>EchoRooms – Menu</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffe6f0;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .door {
+      display: inline-block;
+      background: #ffb3cc;
+      padding: 15px 30px;
+      margin: 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
 </head>
-<body class="menu">
-  <h1>Choose a Room</h1>
-  <div class="room-grid">
-    <a href="senior_room.html" class="room-tile">🛏️ The Senior's Room</a>
-    <a href="bus_stop.html" class="room-tile">🚍 The Bus Stop</a>
-    <!-- Add more tiles here -->
-  </div>
+<body>
+  <h1>Welcome to EchoRooms</h1>
+  <a href="bus_stop.html" class="door">🚌 The Bus Stop</a>
 </body>
 </html>
