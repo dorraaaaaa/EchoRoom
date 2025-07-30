@@ -1,138 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>EchoRooms – The Senior's Room</title>
+  <meta charset="UTF-8" />
+  <title>The Senior’s Room – EchoRooms</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #fdf6f8, #e7dce4);
-      color: #333;
       margin: 0;
-      padding: 40px 20px;
-      text-align: center;
-      position: relative;
+      padding: 30px;
+      background: #f7f1f1;
+      font-family: 'Georgia', serif;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    h1 {
-      color: #b64275;
-      font-size: 2.8em;
-      margin-bottom: 30px;
-    }
-
-    p {
-      font-size: 1.3em;
-      line-height: 1.6;
+    .story-box {
       max-width: 700px;
-      margin: 0 auto 30px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      line-height: 1.6em;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
     }
 
-    button {
-      background-color: #cc6699;
+    .story-box.visible {
+      opacity: 1;
+    }
+
+    .next-button, .choice-btn {
+      padding: 10px 20px;
+      margin-top: 20px;
+      background: #cc6699;
       color: white;
       border: none;
-      padding: 15px 30px;
-      margin: 10px;
-      font-size: 1.1em;
-      border-radius: 10px;
+      border-radius: 8px;
+      font-size: 1em;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background-color: #b94d88;
+    .next-button:hover, .choice-btn:hover {
+      background: #993366;
     }
 
-    #solution-section {
-      display: none;
+    .choice-btn {
+      margin: 10px;
+      background: #888;
+    }
+
+    .choice-btn:hover {
+      background: #555;
+    }
+
+    .action-links {
+      margin-top: 30px;
       text-align: center;
-      padding: 40px 20px;
-      background-color: #f3edf1;
-      border-radius: 15px;
-      margin-top: 40px;
-      animation: fadeIn 2s ease-in;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      font-size: 1.1em;
-    }
-
-    ul li {
-      margin: 12px 0;
-    }
-
-    ul li a {
-      color: #007B88;
+    .action-links a {
+      display: block;
+      margin: 8px 0;
+      color: #cc6699;
       text-decoration: none;
+      font-weight: bold;
     }
 
-    ul li a:hover {
-      text-decoration: underline;
+    .hidden {
+      display: none;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    audio {
+      display: none;
     }
   </style>
 </head>
 <body>
-
-  <!-- 🎵 Musique de fond -->
   <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_96fc0be02d.mp3?filename=soft-piano-ambient-11273.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
+    <source src="https://cdn.pixabay.com/audio/2023/03/07/audio_5764ab3b80.mp3" type="audio/mpeg">
   </audio>
 
-  <h1>👵 The Senior’s Room</h1>
+  <div class="story-box" id="storyBox"></div>
+  <div id="choices" class="hidden"></div>
+  <div id="actions" class="action-links hidden"></div>
 
-  <p>
-    You wake up alone. It's been days since anyone called.<br>
-    The photo frames on the shelf smile back at you, frozen in time.<br>
-    You shuffle to the kitchen — the silence is loud.<br><br>
-    What do you do?
-  </p>
-
-  <button onclick="showStory('call')">📞 Call someone</button>
-  <button onclick="showStory('sleep')">😴 Go back to sleep</button>
-
-  <div id="story-result"></div>
-
-  <div id="solution-section">
-    <h2 style="color: #4CAF50;">🌱 You Can Help</h2>
-    <p>Even a small gesture can break someone's isolation. Here's how:</p>
-    <ul>
-      <li><a href="https://www.alz.org" target="_blank">🧠 Support Alzheimer's Care</a></li>
-      <li><a href="https://www.make-a-call.org" target="_blank">📞 Make a Call to an Isolated Elder</a></li>
-      <li><a href="https://www.volunteerworld.com" target="_blank">🌍 Become a Volunteer Near You</a></li>
-    </ul>
-  </div>
+  <button class="next-button" id="nextBtn">Next</button>
 
   <script>
-    function showStory(choice) {
-      const result = document.getElementById('story-result');
-      let text = '';
+    const story = [
+      "You step into a quiet living room. The clock ticks, echoing louder than it should.",
+      "A photo frame sits on the mantle: a woman, her husband, children. All grown, all gone.",
+      "She makes tea for one. She waits by the phone. Every evening.",
+      "‘Maybe today they’ll call,’ she whispers.",
+      "But the silence returns.",
+      "She scrolls on Facebook. She sees weddings, holidays, grandkids she barely knows.",
+      "You hear her thoughts: 'Was I a bad mother? Or just forgotten?'",
+      "Suddenly, the phone rings… She freezes. Then it stops. A wrong number.",
+      "She sits, staring at the wall. A choice appears..."
+    ];
 
-      if (choice === 'call') {
-        text = `<p>You dial a number. A familiar voice answers — surprise, warmth, connection. 
-                A five-minute chat becomes the best moment of your week. 
-                Sometimes, reaching out brings healing.</p>`;
+    const storyBox = document.getElementById('storyBox');
+    const nextBtn = document.getElementById('nextBtn');
+    const choices = document.getElementById('choices');
+    const actions = document.getElementById('actions');
+
+    let index = 0;
+
+    function showNext() {
+      if (index < story.length) {
+        storyBox.classList.remove('visible');
+        setTimeout(() => {
+          storyBox.innerHTML = story[index];
+          storyBox.classList.add('visible');
+          index++;
+        }, 300);
       } else {
-        text = `<p>You lay back in bed. Outside, life moves on. 
-                Inside, the loneliness wraps tighter. You deserve more. 
-                Maybe tomorrow, you'll try again.</p>`;
+        nextBtn.classList.add('hidden');
+        showChoices();
       }
-
-      result.innerHTML = text;
-
-      // Afficher les solutions après 4 secondes
-      setTimeout(() => {
-        document.getElementById('solution-section').style.display = 'block';
-      }, 4000);
     }
-  </script>
 
+    function showChoices() {
+      choices.classList.remove('hidden');
+      choices.innerHTML = `
+        <button class="choice-btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
+        <button class="choice-btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
+        <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Ignore it and walk away</button>
+      `;
+    }
+
+    function showOutcome(choice) {
+      choices.classList.add('hidden');
+      storyBox.classList.remove('visible');
+
+      setTimeout(() => {
+        if (choice === 'call') {
+          storyBox.innerHTML = "You take out your phone. You call your grandmother. Her voice lights up. She tells you you made her week.";
+        } else if (choice === 'visit') {
+          storyBox.innerHTML = "You visit a retirement home. You sit with a woman who tells you stories from 1956. She holds your hand as she smiles.";
+        } else {
+          storyBox.innerHTML = "You walk away. Her room fades behind you. You wonder, briefly, what would’ve happened if you stayed.";
+        }
+
+        storyBox.classList.add('visible');
+        showActions();
+      }, 300);
+    }
+
+    function showActions() {
+      actions.classList.remove('hidden');
+      actions.innerHTML = `
+        <p><strong>🌱 Want to help fight senior loneliness?</strong></p>
+        <a href="https://www.alonetogether.org.uk" target="_blank">🫶 Volunteer with senior outreach programs</a>
+        <a href="https://www.lettersoflove.net/" target="_blank">💌 Send handwritten letters to the elderly</a>
+        <a href="https://www.makeacall.org" target="_blank">📞 Call or visit an elder today</a>
+        <a href="menu.html">← Back to EchoRooms Menu</a>
+      `;
+    }
+
+    nextBtn.addEventListener('click', showNext);
+    showNext();
+  </script>
 </body>
 </html>
