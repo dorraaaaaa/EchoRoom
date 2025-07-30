@@ -2,146 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Senior’s Room – EchoRooms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Senior's Room – EchoRooms</title>
   <style>
     body {
       margin: 0;
-      padding: 30px;
-      background: #f7f1f1;
+      padding: 0;
       font-family: 'Georgia', serif;
+      background: linear-gradient(to bottom, #fbeff2, #e6d5e0);
       color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      overflow-x: hidden;
     }
-
-    .story-box {
+    .container {
       max-width: 700px;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      font-size: 1.2em;
-      line-height: 1.6em;
+      margin: 80px auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      transition: all 1s ease-in-out;
     }
-
-    .next-button {
-      padding: 10px 20px;
-      margin-top: 20px;
-      background: #cc6699;
+    .fade {
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .fade.visible {
+      opacity: 1;
+    }
+    button {
+      padding: 12px 25px;
+      background-color: #cc6699;
       color: white;
-      border: none;
-      border-radius: 8px;
       font-size: 1em;
-      cursor: pointer;
-    }
-
-    .choice-btn {
-      margin: 10px;
-      padding: 10px 20px;
       border: none;
-      background: #999;
-      color: white;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
     }
-
-    .choice-btn:hover {
-      background: #555;
+    button:hover {
+      background-color: #b84d84;
     }
-
-    .action-links {
-      margin-top: 30px;
+    .end-actions ul {
+      list-style: none;
+      padding: 0;
     }
-
-    .action-links a {
-      display: block;
-      margin: 8px 0;
-      color: #cc6699;
-      text-decoration: none;
-      font-weight: bold;
+    .end-actions li {
+      background: #f0e6f0;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 8px;
     }
-
-    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="story-box" id="storyBox"></div>
-  <div id="choices" class="hidden"></div>
-  <div id="actions" class="action-links hidden"></div>
+  <audio id="bgm" loop autoplay>
+    <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_d2a6b1c795.mp3" type="audio/mp3">
+  </audio>
 
-  <button class="next-button" id="nextBtn">Next</button>
+  <div class="container fade" id="scene">
+    <p id="text">You wake up to the ticking of the clock. It's 7:03 AM. The apartment is quiet. Too quiet.</p>
+    <div id="choices"></div>
+  </div>
 
   <script>
-    const story = [
-      "You step into a quiet living room. The clock ticks, echoing louder than it should.",
-      "A photo frame sits on the mantle: a woman, her husband, children. All grown, all gone.",
-      "She makes tea for one. She waits by the phone. Every evening.",
-      "‘Maybe today they’ll call,’ she whispers.",
-      "But the silence returns.",
-      "She scrolls on Facebook. She sees weddings, holidays, grandkids she barely knows.",
-      "You hear her thoughts: 'Was I a bad mother? Or just forgotten?'",
-      "Suddenly, the phone rings… She freezes. Then it stops. A wrong number.",
-      "She sits, staring at the wall. A choice appears..."
-    ];
-
-    const storyBox = document.getElementById('storyBox');
-    const nextBtn = document.getElementById('nextBtn');
+    const scene = document.getElementById('scene');
+    const text = document.getElementById('text');
     const choices = document.getElementById('choices');
-    const actions = document.getElementById('actions');
+
+    const story = [
+      {
+        text: "You sit on the edge of the bed, staring at a picture frame on the wall. It's your family. Taken 12 years ago.",
+        choices: ["Stand up", "Lie back down"]
+      },
+      {
+        text: "You shuffle slowly to the kitchen. The fridge hums. A post-it note says: \"Doctor's appointment - next Tuesday.\"",
+        choices: ["Make tea", "Check the window"]
+      },
+      {
+        text: "Outside, the street is quiet. Children laugh faintly in the distance. You smile — then realize they’re not yours.",
+        choices: ["Wave anyway", "Close the curtain"]
+      },
+      {
+        text: "You sit in your old rocking chair. You remember stories, faces, names. Some are fading. Some stay. Always."
+      },
+      {
+        text: "You want to talk. But no one's called. Not today. Not yesterday. You think of calling someone... but hesitate.",
+        choices: ["Call someone", "Go back to sleep"]
+      },
+      {
+        text: "You call. A warm voice answers. \"Grandma? Is that you?\" You smile, eyes wet. Just for a moment, you’re not alone."
+      },
+      {
+        text: "You decide to go back to sleep. Maybe you’ll dream of better times. Maybe you won’t wake up. You don’t know which feels better."
+      },
+      {
+        text: "You’ve just spent a few minutes in the skin of someone forgotten. But they exist. Right now. And they need us."
+      }
+    ];
 
     let index = 0;
 
-    function showNext() {
-      if (index < story.length) {
-        storyBox.innerHTML = story[index];
-        index++;
-      } else {
-        nextBtn.classList.add('hidden');
-        showChoices();
-      }
+    function showScene(i) {
+      scene.classList.remove('visible');
+      setTimeout(() => {
+        text.textContent = story[i].text;
+        choices.innerHTML = '';
+
+        if (story[i].choices) {
+          story[i].choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.textContent = choice;
+            btn.onclick = () => {
+              index++;
+              showScene(index);
+            };
+            choices.appendChild(btn);
+          });
+        } else if (i === story.length - 1) {
+          const endDiv = document.createElement('div');
+          endDiv.className = 'end-actions';
+          endDiv.innerHTML = `
+            <h3>What can you do?</h3>
+            <ul>
+              <li>📞 Call a grandparent or elderly neighbor today.</li>
+              <li>🧓 Volunteer at a retirement home once a month.</li>
+              <li>📢 Share this story to raise awareness.</li>
+            </ul>
+          `;
+          choices.appendChild(endDiv);
+        } else {
+          const btn = document.createElement('button');
+          btn.textContent = "Continue";
+          btn.onclick = () => {
+            index++;
+            showScene(index);
+          };
+          choices.appendChild(btn);
+        }
+
+        scene.classList.add('visible');
+      }, 600);
     }
 
-    function showChoices() {
-      choices.classList.remove('hidden');
-      choices.innerHTML = `
-        <button class="choice-btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
-        <button class="choice-btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
-        <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Ignore it and walk away</button>
-      `;
-    }
-
-    function showOutcome(choice) {
-      choices.classList.add('hidden');
-      storyBox.innerHTML = "";
-
-      if (choice === 'call') {
-        storyBox.innerHTML = "You take out your phone. You call your grandmother. Her voice lights up. She tells you you made her week.";
-      } else if (choice === 'visit') {
-        storyBox.innerHTML = "You visit a retirement home. You sit with a woman who tells you stories from 1956. She holds your hand as she smiles.";
-      } else {
-        storyBox.innerHTML = "You walk away. Her room fades behind you. You wonder, briefly, what would’ve happened if you stayed.";
-      }
-
-      showActions();
-    }
-
-    function showActions() {
-      actions.classList.remove('hidden');
-      actions.innerHTML = `
-        <p><strong>Want to help fight senior loneliness?</strong></p>
-        <a href="https://www.alonetogether.org.uk" target="_blank">🫶 Volunteer with senior outreach programs</a>
-        <a href="https://www.makeagift.org" target="_blank">🎁 Send letters or gifts to elderly people in homes</a>
-        <a href="mailto:grandma@example.com">📧 Call or email an elder you know — today</a>
-        <a href="menu.html">← Back to EchoRooms Menu</a>
-      `;
-    }
-
-    nextBtn.addEventListener('click', showNext);
-
-    // Start with first paragraph
-    showNext();
+    window.onload = () => {
+      showScene(index);
+    };
   </script>
 </body>
 </html>
