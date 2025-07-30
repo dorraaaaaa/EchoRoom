@@ -24,15 +24,10 @@
       margin-bottom: 20px;
       font-size: 1.2em;
       line-height: 1.6em;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
+      transition: all 0.5s ease-in-out;
     }
 
-    .story-box.visible {
-      opacity: 1;
-    }
-
-    .next-button, .choice-btn {
+    .next-button {
       padding: 10px 20px;
       margin-top: 20px;
       background: #cc6699;
@@ -41,16 +36,22 @@
       border-radius: 8px;
       font-size: 1em;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background 0.3s;
     }
 
-    .next-button:hover, .choice-btn:hover {
-      background: #993366;
+    .next-button:hover {
+      background: #a14d78;
     }
 
     .choice-btn {
       margin: 10px;
-      background: #888;
+      padding: 10px 20px;
+      border: none;
+      background: #999;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
     }
 
     .choice-btn:hover {
@@ -59,7 +60,6 @@
 
     .action-links {
       margin-top: 30px;
-      text-align: center;
     }
 
     .action-links a {
@@ -70,20 +70,10 @@
       font-weight: bold;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    audio {
-      display: none;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/audio/2023/03/07/audio_5764ab3b80.mp3" type="audio/mpeg">
-  </audio>
-
   <div class="story-box" id="storyBox"></div>
   <div id="choices" class="hidden"></div>
   <div id="actions" class="action-links hidden"></div>
@@ -92,15 +82,15 @@
 
   <script>
     const story = [
-      "You step into a quiet living room. The clock ticks, echoing louder than it should.",
-      "A photo frame sits on the mantle: a woman, her husband, children. All grown, all gone.",
-      "She makes tea for one. She waits by the phone. Every evening.",
-      "‘Maybe today they’ll call,’ she whispers.",
-      "But the silence returns.",
-      "She scrolls on Facebook. She sees weddings, holidays, grandkids she barely knows.",
-      "You hear her thoughts: 'Was I a bad mother? Or just forgotten?'",
-      "Suddenly, the phone rings… She freezes. Then it stops. A wrong number.",
-      "She sits, staring at the wall. A choice appears..."
+      "You step into a living room wrapped in stillness. The clock ticks — each second a small reminder of absence.",
+      "A photo frame rests quietly on the mantle: a woman, her husband, children — frozen smiles from a distant past.",
+      "She prepares tea for one. No voices fill the room. Just the sound of boiling water and waiting.",
+      "‘Maybe today they’ll remember,’ she whispers, pouring into a cup she may not finish.",
+      "But silence is louder than any reply.",
+      "Her fingers scroll through a glowing screen. Weddings, holidays, lives moving forward — without her.",
+      "A whisper in her mind: 'Did I fade... or was I simply erased?'",
+      "The phone rings. A gasp — a flicker of hope. But it’s a wrong number. Silence, again.",
+      "She lowers her gaze. The light in her eyes dims. Somewhere inside you, something stirs — a question: will you let her fade alone?"
     ];
 
     const storyBox = document.getElementById('storyBox');
@@ -112,12 +102,8 @@
 
     function showNext() {
       if (index < story.length) {
-        storyBox.classList.remove('visible');
-        setTimeout(() => {
-          storyBox.innerHTML = story[index];
-          storyBox.classList.add('visible');
-          index++;
-        }, 300);
+        storyBox.innerHTML = story[index];
+        index++;
       } else {
         nextBtn.classList.add('hidden');
         showChoices();
@@ -129,40 +115,38 @@
       choices.innerHTML = `
         <button class="choice-btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
         <button class="choice-btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
-        <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Ignore it and walk away</button>
+        <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Walk away silently</button>
       `;
     }
 
     function showOutcome(choice) {
       choices.classList.add('hidden');
-      storyBox.classList.remove('visible');
+      storyBox.innerHTML = "";
 
-      setTimeout(() => {
-        if (choice === 'call') {
-          storyBox.innerHTML = "You take out your phone. You call your grandmother. Her voice lights up. She tells you you made her week.";
-        } else if (choice === 'visit') {
-          storyBox.innerHTML = "You visit a retirement home. You sit with a woman who tells you stories from 1956. She holds your hand as she smiles.";
-        } else {
-          storyBox.innerHTML = "You walk away. Her room fades behind you. You wonder, briefly, what would’ve happened if you stayed.";
-        }
+      if (choice === 'call') {
+        storyBox.innerHTML = "You dial her number. Her voice trembles — not from age, but from surprise. You hear her breathe in the warmth of being remembered.";
+      } else if (choice === 'visit') {
+        storyBox.innerHTML = "You walk into a retirement home. She looks up. For the first time in days, someone listens to her story. And it matters.";
+      } else {
+        storyBox.innerHTML = "You step back into the world. Her window grows smaller in the distance. And the silence behind it grows deeper still.";
+      }
 
-        storyBox.classList.add('visible');
-        showActions();
-      }, 300);
+      showActions();
     }
 
     function showActions() {
       actions.classList.remove('hidden');
       actions.innerHTML = `
-        <p><strong>🌱 Want to help fight senior loneliness?</strong></p>
+        <p><strong>Let’s not let them disappear in silence.</strong></p>
         <a href="https://www.alonetogether.org.uk" target="_blank">🫶 Volunteer with senior outreach programs</a>
-        <a href="https://www.lettersoflove.net/" target="_blank">💌 Send handwritten letters to the elderly</a>
-        <a href="https://www.makeacall.org" target="_blank">📞 Call or visit an elder today</a>
+        <a href="https://www.makeagift.org" target="_blank">🎁 Send letters or gifts to elderly people in homes</a>
+        <a href="mailto:grandma@example.com">📧 Reach out to someone who waits for your voice</a>
         <a href="menu.html">← Back to EchoRooms Menu</a>
       `;
     }
 
     nextBtn.addEventListener('click', showNext);
+
     showNext();
   </script>
 </body>
