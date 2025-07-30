@@ -72,6 +72,17 @@
 
     .hidden { display: none; }
   </style>
+
+  <!-- 🎵 Musique de fond triste -->
+  <audio id="bgMusic" loop autoplay>
+    <source src="https://cdn.pixabay.com/audio/2022/11/21/audio_e3a3c489c6.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- 🔔 Son discret pour les choix -->
+  <audio id="dingSound">
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_44cf241996.mp3" type="audio/mpeg">
+  </audio>
 </head>
 <body>
   <div class="story-box" id="storyBox"></div>
@@ -117,6 +128,7 @@
         <button class="choice-btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
         <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Walk away silently</button>
       `;
+      document.getElementById('dingSound').play(); // 🔔 joue le son au moment du choix
     }
 
     function showOutcome(choice) {
@@ -147,7 +159,13 @@
 
     nextBtn.addEventListener('click', showNext);
 
-    showNext();
+    // 🎵 Démarrage musique avec volume doux
+    window.addEventListener('load', () => {
+      const bgMusic = document.getElementById('bgMusic');
+      bgMusic.volume = 0.4;
+      bgMusic.play().catch(() => {}); // Évite erreur si autoplay est bloqué
+      showNext();
+    });
   </script>
 </body>
 </html>
