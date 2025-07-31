@@ -184,5 +184,31 @@ function toggleMusic() {
 
     showNext();
   </script>
+  <audio id="bg-music" autoplay loop>
+  <source src="https://cdn.pixabay.com/audio/2023/03/20/audio_5222b00179.mp3" type="audio/mpeg">
+  Ton navigateur ne supporte pas l’audio HTML5.
+</audio>
+
+<script>
+  // For autoplay to work, sometimes interaction is needed
+  window.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('bg-music');
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Display a button if autoplay fails (mobile or browser settings)
+        const btn = document.createElement("button");
+        btn.textContent = "🎵 Lancer la musique";
+        btn.style = "position: fixed; bottom: 20px; left: 20px; z-index: 999; padding: 10px 20px; background: #cc6699; color: white; border: none; border-radius: 8px;";
+        btn.onclick = () => {
+          audio.play();
+          btn.remove();
+        };
+        document.body.appendChild(btn);
+      });
+    }
+  });
+</script>
+
 </body>
 </html>
