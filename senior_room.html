@@ -89,7 +89,6 @@
   </audio>
 
   <div class="story-box" id="storyBox"></div>
-  
   <div id="choices" class="hidden"></div>
   <div id="actions" class="action-links hidden"></div>
   <button class="next-button" id="nextBtn">Next</button>
@@ -107,15 +106,6 @@
       "She lowers her gaze. The light in her eyes dims. Somewhere inside you, something stirs — a question: will you let her fade alone?"
     ];
     
-function toggleMusic() {
-  const music = document.getElementById('bg-music');
-  if (music.paused) {
-    music.play();
-  } else {
-    music.pause();
-  }
-}
-
     const storyBox = document.getElementById('storyBox');
     const nextBtn = document.getElementById('nextBtn');
     const choices = document.getElementById('choices');
