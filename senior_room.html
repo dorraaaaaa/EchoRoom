@@ -89,8 +89,13 @@
   </audio>
 
   <div class="story-box" id="storyBox"></div>
+  
   <div id="choices" class="hidden"></div>
   <div id="actions" class="action-links hidden"></div>
+<audio id="bg-music" autoplay loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/11/audio_3e0d9d41fb.mp3" type="audio/mpeg">
+</audio>
+
 
   <button class="next-button" id="nextBtn">Next</button>
 
@@ -106,6 +111,15 @@
       "The phone rings. A gasp — a flicker of hope. But it’s a wrong number. Silence, again.",
       "She lowers her gaze. The light in her eyes dims. Somewhere inside you, something stirs — a question: will you let her fade alone?"
     ];
+    
+function toggleMusic() {
+  const music = document.getElementById('bg-music');
+  if (music.paused) {
+    music.play();
+  } else {
+    music.pause();
+  }
+}
 
     const storyBox = document.getElementById('storyBox');
     const nextBtn = document.getElementById('nextBtn');
@@ -134,6 +148,7 @@
         <button class="choice-btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
         <button class="choice-btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
         <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Walk away silently</button>
+        <button class="next-button" onclick="toggleMusic()">🔇 Pause / Play</button>
       `;
     }
 
