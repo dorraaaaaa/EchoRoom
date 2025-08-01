@@ -168,8 +168,7 @@
     showNext();
   </script>
 <audio id="bg-music" loop>
-  <source src="https://cdn.pixabay.com/audio/2023/03/20/audio_5222b00179.mp3" type="audio/mpeg">
-  Ton navigateur ne supporte pas l’audio HTML5.
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 <button id="play-btn" style="position:fixed; bottom:20px; left:20px; z-index:999; padding:10px 20px; background:#cc6699; color:white; border:none; border-radius:8px;">
@@ -177,7 +176,8 @@
 </button>
 
 <script>
-  const audio = document.getElementById("bg-music");
+const audio = document.getElementById("bg-music");
+audio.crossOrigin = "anonymous";
   const playBtn = document.getElementById("play-btn");
 
   playBtn.addEventListener("click", () => {
