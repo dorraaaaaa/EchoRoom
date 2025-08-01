@@ -1,195 +1,92 @@
+
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>The Senior’s Room – EchoRooms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EchoRooms – The Senior's Room</title>
   <style>
     body {
       margin: 0;
-      padding: 30px;
-      background: linear-gradient(135deg, #f7f1f1, #e3dada);
-      font-family: 'Georgia', serif;
-      color: #333;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #2c3e50, #34495e, #1f1f1f, #2c3e50);
+      background-size: 400% 400%;
+      animation: gradient 20s ease infinite;
+      color: white;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      overflow-x: hidden;
+      height: 100vh;
+      text-align: center;
     }
 
-    .story-box {
-      max-width: 700px;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
+    @keyframes gradient {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    p {
       font-size: 1.2em;
-      line-height: 1.6em;
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
+      max-width: 600px;
+      margin: 20px;
     }
 
-    .story-box.visible {
-      opacity: 1;
-    }
-
-    .next-button {
-      padding: 10px 20px;
-      margin-top: 20px;
+    #play-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      padding: 12px 24px;
       background: #cc6699;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 1em;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .next-button:hover {
-      background: #a14d78;
-    }
-
-    .choice-btn {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      background: #999;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .choice-btn:hover {
-      background: #555;
-    }
-
-    .action-links {
-      margin-top: 30px;
-    }
-
-    .action-links a {
-      display: block;
-      margin: 8px 0;
-      color: #cc6699;
-      text-decoration: none;
       font-weight: bold;
+      font-size: 1em;
+      z-index: 999;
+      transition: background 0.3s;
     }
 
-    .hidden { display: none; }
-
-    .background-music {
-      display: none;
+    #play-btn:hover {
+      background: #e07aa0;
     }
   </style>
 </head>
 <body>
-  
-  <div class="story-box" id="storyBox"></div>
-  <div id="choices" class="hidden"></div>
-  <div id="actions" class="action-links hidden"></div>
-  <button class="next-button" id="nextBtn">Next</button>
+
+  <h1>🕊️ The Senior's Room</h1>
+  <p>She sits in silence, memories echoing in the corners of the room.  
+  Forgotten by time, her heartbeat still hopes someone might care.</p>
+
+  <button id="play-btn">🎵 Lancer la musique</button>
+
+  <audio id="bg-music" loop>
+    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Monplaisir/Monplaisir_Orchestral/Monplaisir_-_Alone.mp3" type="audio/mpeg">
+    Ton navigateur ne supporte pas l’audio HTML5.
+  </audio>
 
   <script>
-    const story = [
-      "You step into a living room wrapped in stillness. The clock ticks — each second a small reminder of absence.",
-      "A photo frame rests quietly on the mantle: a woman, her husband, children — frozen smiles from a distant past.",
-      "She prepares tea for one. No voices fill the room. Just the sound of boiling water and waiting.",
-      "‘Maybe today they’ll remember,’ she whispers, pouring into a cup she may not finish.",
-      "But silence is louder than any reply.",
-      "Her fingers scroll through a glowing screen. Weddings, holidays, lives moving forward — without her.",
-      "A whisper in her mind: 'Did I fade... or was I simply erased?'",
-      "The phone rings. A gasp — a flicker of hope. But it’s a wrong number. Silence, again.",
-      "She lowers her gaze. The light in her eyes dims. Somewhere inside you, something stirs — a question: will you let her fade alone?"
-    ];
-    
-    const storyBox = document.getElementById('storyBox');
-    const nextBtn = document.getElementById('nextBtn');
-    const choices = document.getElementById('choices');
-    const actions = document.getElementById('actions');
+    const audio = document.getElementById("bg-music");
+    const playBtn = document.getElementById("play-btn");
 
-    let index = 0;
-
-    function showNext() {
-      if (index < story.length) {
-        storyBox.classList.remove('visible');
-        setTimeout(() => {
-          storyBox.innerHTML = story[index];
-          storyBox.classList.add('visible');
-          index++;
-        }, 500);
-      } else {
-        nextBtn.classList.add('hidden');
-        showChoices();
-      }
-    }
-
-   function showChoices() {
-  choices.classList.remove('hidden');
-  choices.innerHTML = `
-    <button class="choice-btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
-    <button class="choice-btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
-    <button class="choice-btn" onclick="showOutcome('ignore')">🚪 Walk away silently</button>
-    <button class="choice-btn" onclick="toggleMusic()">🔇 Pause / Play Music</button>
-  `;
-}
-
-
-    function showOutcome(choice) {
-      choices.classList.add('hidden');
-      storyBox.classList.remove('visible');
-      setTimeout(() => {
-        storyBox.innerHTML = "";
-        if (choice === 'call') {
-          storyBox.innerHTML = "You dial her number. Her voice trembles — not from age, but from surprise. You hear her breathe in the warmth of being remembered.";
-        } else if (choice === 'visit') {
-          storyBox.innerHTML = "You walk into a retirement home. She looks up. For the first time in days, someone listens to her story. And it matters.";
-        } else {
-          storyBox.innerHTML = "You step back into the world. Her window grows smaller in the distance. And the silence behind it grows deeper still.";
-        }
-        storyBox.classList.add('visible');
-        showActions();
-      }, 500);
-    }
-
-    function showActions() {
-      actions.classList.remove('hidden');
-      actions.innerHTML = `
-        <p><strong>Let’s not let them disappear in silence.</strong></p>
-        <a href="https://www.alonetogether.org.uk" target="_blank">🫶 Volunteer with senior outreach programs</a>
-        <a href="https://www.makeagift.org" target="_blank">🎁 Send letters or gifts to elderly people in homes</a>
-        <a href="mailto:grandma@example.com">📧 Reach out to someone who waits for your voice</a>
-        <a href="menu.html">← Back to EchoRooms Menu</a>
-      `;
-    }
-
-    nextBtn.addEventListener('click', showNext);
-
-    showNext();
-  </script>
-<audio id="bg-music" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-  Ton navigateur ne supporte pas l’audio HTML5.
-</audio>
-
-<button id="play-btn" style="position:fixed; bottom:20px; left:20px; z-index:999; padding:10px 20px; background:#cc6699; color:white; border:none; border-radius:8px;">
-  🎵 Lancer la musique
-</button>
-
-<script>
-  const audio = document.getElementById("bg-music");
-  audio.crossOrigin = "anonymous";
-
-  const playBtn = document.getElementById("play-btn");
-
-  playBtn.addEventListener("click", () => {
-    audio.play().then(() => {
-      playBtn.style.display = "none";
-    }).catch((e) => {
-      alert("Erreur : la musique ne peut pas être jouée.");
-      console.error(e);
+    playBtn.addEventListener("click", () => {
+      audio.play()
+        .then(() => playBtn.style.display = "none")
+        .catch(err => {
+          alert("Impossible de jouer la musique : " + err.message);
+          console.error(err);
+        });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
