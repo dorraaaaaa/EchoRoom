@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,9 +7,11 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Georgia', serif;
-      background: linear-gradient(to bottom, #1c1c1c, #3a3a3a);
-      color: #f0f0f0;
+      background: linear-gradient(-45deg, #1e3c72, #2a5298, #4a6fa5, #1b2735);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -148,6 +148,15 @@
         storyBox.classList.add('visible');
         choices.classList.add('hidden');
       }, 300);
+      
+      <div id="finalMessage" class="hidden" style="text-align: center; padding: 20px;">
+     <p style="font-size: 18px; color: #ffffff; max-width: 600px; margin: auto;">
+     "You stepped into the life of a lonely senior, and I hope you caught a glimpse of how difficult it can be for them to face each day alone. Remember, even the smallest acts of kindness can change the world—one step at a time."
+     </p>
+     <a href="index.html" style="margin-top: 20px; display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 8px;">⬅️ Return to Menu</a>
+     </div>
+      document.getElementById("finalMessage").classList.remove("hidden");
+
     }
   </script>
 </body>
