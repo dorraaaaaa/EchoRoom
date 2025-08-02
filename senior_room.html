@@ -69,11 +69,34 @@
   Forgotten by time, her heartbeat still hopes someone might care.</p>
 
   <button id="play-btn">🎵 Lancer la musique</button>
+  <div id="story" style="margin-top: 40px;">
+  <p id="text">Elle regarde par la fenêtre. Chaque jour ressemble au précédent. Le silence est lourd... Puis, une pensée surgit.</p>
+  <div id="choices" style="margin-top: 20px;">
+    <button onclick="choose('call')">📞 Appeler quelqu’un</button>
+    <button onclick="choose('sleep')">😴 Repartir se coucher</button>
+  </div>
+</div>
+
+<script>
+  function choose(option) {
+    const text = document.getElementById("text");
+    const choices = document.getElementById("choices");
+
+    if (option === 'call') {
+      text.innerText = "Sa main tremble en décrochant le téléphone. Une voix douce lui répond. Une larme coule. Elle n’est plus seule.";
+    } else {
+      text.innerText = "Elle ferme les yeux. Dans ses rêves, le monde est plus doux. Mais la solitude reste là, au réveil.";
+    }
+
+    choices.innerHTML = '<p style="margin-top: 30px;">🌱 Vous pouvez faire la différence : appelez un aîné, rendez-lui visite, soyez le rayon de soleil d’un jour gris.</p>';
+  }
+</script>
+
 
   <audio id="bg-music" loop>
-    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Monplaisir/Monplaisir_Orchestral/Monplaisir_-_Alone.mp3" type="audio/mpeg">
-    Ton navigateur ne supporte pas l’audio HTML5.
-  </audio>
+  <source src="https://cdn.pixabay.com/audio/2023/01/19/audio_ee8a3c3b58.mp3" type="audio/mpeg">
+  Ton navigateur ne supporte pas l’audio HTML5.
+</audio>
 
   <script>
     const audio = document.getElementById("bg-music");
