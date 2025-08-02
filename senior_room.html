@@ -2,114 +2,153 @@
 
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EchoRooms – The Senior's Room</title>
+  <title>The Empty Chair</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(-45deg, #2c3e50, #34495e, #1f1f1f, #2c3e50);
-      background-size: 400% 400%;
-      animation: gradient 20s ease infinite;
-      color: white;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(to bottom, #1c1c1c, #3a3a3a);
+      color: #f0f0f0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       text-align: center;
+      padding: 20px;
     }
 
-    @keyframes gradient {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 1.2em;
+    #storyBox {
       max-width: 600px;
-      margin: 20px;
+      font-size: 1.3em;
+      margin-bottom: 30px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
 
-    #play-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      padding: 12px 24px;
-      background: #cc6699;
+    #storyBox.visible {
+      opacity: 1;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #444;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
       font-size: 1em;
-      z-index: 999;
       transition: background 0.3s;
     }
 
-    #play-btn:hover {
-      background: #e07aa0;
+    .btn:hover {
+      background-color: #666;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #choices button {
+      display: block;
+      margin: 10px auto;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    audio {
+      display: none;
+    }
+
+    #musicBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #222;
     }
   </style>
 </head>
 <body>
-
-  <h1>🕊️ The Senior's Room</h1>
-  <p>She sits in silence, memories echoing in the corners of the room.  
-  Forgotten by time, her heartbeat still hopes someone might care.</p>
-
-  <button id="play-btn">🎵 Lancer la musique</button>
-  <div id="story" style="margin-top: 40px;">
-  <p id="text">Elle regarde par la fenêtre. Chaque jour ressemble au précédent. Le silence est lourd... Puis, une pensée surgit.</p>
-  <div id="choices" style="margin-top: 20px;">
-    <button onclick="choose('call')">📞 Appeler quelqu’un</button>
-    <button onclick="choose('sleep')">😴 Repartir se coucher</button>
-  </div>
-</div>
-
-<script>
-  function choose(option) {
-    const text = document.getElementById("text");
-    const choices = document.getElementById("choices");
-
-    if (option === 'call') {
-      text.innerText = "Sa main tremble en décrochant le téléphone. Une voix douce lui répond. Une larme coule. Elle n’est plus seule.";
-    } else {
-      text.innerText = "Elle ferme les yeux. Dans ses rêves, le monde est plus doux. Mais la solitude reste là, au réveil.";
-    }
-
-    choices.innerHTML = '<p style="margin-top: 30px;">🌱 Vous pouvez faire la différence : appelez un aîné, rendez-lui visite, soyez le rayon de soleil d’un jour gris.</p>';
-  }
-</script>
-
+  <div id="storyBox">Click "Start" to begin the story...</div>
+  <button id="nextBtn" class="btn" onclick="showNext()">Start</button>
+  <div id="choices" class="hidden"></div>
+  <div id="actions"></div>
+  <button id="musicBtn" class="btn" onclick="toggleMusic()">🎵 Toggle Music</button>
 
   <audio id="bg-music" loop>
-  <source src="https://cdn.pixabay.com/audio/2023/01/19/audio_ee8a3c3b58.mp3" type="audio/mpeg">
-  Ton navigateur ne supporte pas l’audio HTML5.
-</audio>
+    <source src="https://cdn.pixabay.com/audio/2022/03/22/audio_48fa8b9b9c.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
-    const audio = document.getElementById("bg-music");
-    const playBtn = document.getElementById("play-btn");
+    const story = [ 
+      "You step into a living room wrapped in stillness. The clock ticks — each second a small reminder of absence.",
+      "A photo frame rests quietly on the mantle: a woman, her husband, children — frozen smiles from a distant past.",
+      "She prepares tea for one. No voices fill the room. Just the sound of boiling water and waiting.",
+      "‘Maybe today they’ll remember,’ she whispers, pouring into a cup she may not finish.",
+      "But silence is louder than any reply.",
+      "Her fingers scroll through a glowing screen. Weddings, holidays, lives moving forward — without her.",
+      "A whisper in her mind: 'Did I fade... or was I simply erased?'",
+      "The phone rings. A gasp — a flicker of hope. But it’s a wrong number. Silence, again.",
+      "She lowers her gaze. The light in her eyes dims. Somewhere inside you, something stirs — a question: will you let her fade alone?"
+    ];
 
-    playBtn.addEventListener("click", () => {
-      audio.play()
-        .then(() => playBtn.style.display = "none")
-        .catch(err => {
-          alert("Impossible de jouer la musique : " + err.message);
-          console.error(err);
-        });
-    });
+    let index = 0;
+    const storyBox = document.getElementById('storyBox');
+    const nextBtn = document.getElementById('nextBtn');
+    const choices = document.getElementById('choices');
+    const music = document.getElementById('bg-music');
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+
+    function showNext() {
+      if (index < story.length) {
+        storyBox.classList.remove('visible');
+        setTimeout(() => {
+          storyBox.innerHTML = story[index];
+          storyBox.classList.add('visible');
+          index++;
+          if (index === 1) music.play(); // music starts after first click
+        }, 300);
+      } else {
+        nextBtn.classList.add('hidden');
+        showChoices();
+      }
+    }
+
+    function showChoices() {
+      choices.classList.remove('hidden');
+      choices.innerHTML = `
+        <button class="btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
+        <button class="btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
+        <button class="btn" onclick="showOutcome('ignore')">🚪 Walk away silently</button>
+      `;
+    }
+
+    function showOutcome(choice) {
+      storyBox.classList.remove('visible');
+      setTimeout(() => {
+        if (choice === 'call') {
+          storyBox.innerHTML = "Your voice reaches someone who hasn’t smiled in days. You made a difference.";
+        } else if (choice === 'visit') {
+          storyBox.innerHTML = "You walk in — eyes light up. A simple visit becomes someone’s brightest day.";
+        } else {
+          storyBox.innerHTML = "You walk away. Her silence deepens. And something inside you feels colder.";
+        }
+        storyBox.classList.add('visible');
+        choices.classList.add('hidden');
+      }, 300);
+    }
   </script>
 </body>
 </html>
