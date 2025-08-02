@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,11 +19,13 @@
       text-align: center;
       padding: 20px;
     }
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     #storyBox {
       max-width: 600px;
       font-size: 1.3em;
@@ -74,13 +75,42 @@
       right: 20px;
       background-color: #222;
     }
+
+    #finalMessage {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #finalMessage p {
+      font-size: 18px;
+      color: #ffffff;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    #finalMessage a {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
   <div id="storyBox">Click "Start" to begin the story...</div>
   <button id="nextBtn" class="btn" onclick="showNext()">Start</button>
   <div id="choices" class="hidden"></div>
-  <div id="actions"></div>
+  <div id="finalMessage">
+    <p>
+      "You stepped into the life of a lonely senior, and I hope you caught a glimpse of how difficult it can be for them to face each day alone.
+      Remember, even the smallest acts of kindness can change the world—one step at a time."
+    </p>
+    <a href="index.html">⬅️ Return to Menu</a>
+  </div>
   <button id="musicBtn" class="btn" onclick="toggleMusic()">🎵 Toggle Music</button>
 
   <audio id="bg-music" loop>
@@ -106,10 +136,13 @@
     const nextBtn = document.getElementById('nextBtn');
     const choices = document.getElementById('choices');
     const music = document.getElementById('bg-music');
+    const finalMessage = document.getElementById('finalMessage');
 
     function toggleMusic() {
       if (music.paused) {
-        music.play();
+        music.play().catch(e => {
+          console.log("Audio play failed: ", e);
+        });
       } else {
         music.pause();
       }
@@ -122,7 +155,7 @@
           storyBox.innerHTML = story[index];
           storyBox.classList.add('visible');
           index++;
-          if (index === 1) music.play(); // music starts after first click
+          if (index === 1) music.play();
         }, 300);
       } else {
         nextBtn.classList.add('hidden');
@@ -151,16 +184,12 @@
         }
         storyBox.classList.add('visible');
         choices.classList.add('hidden');
-      }, 300);
-      
-      <div id="finalMessage" class="hidden" style="text-align: center; padding: 20px;">
-     <p style="font-size: 18px; color: #ffffff; max-width: 600px; margin: auto;">
-     "You stepped into the life of a lonely senior, and I hope you caught a glimpse of how difficult it can be for them to face each day alone. Remember, even the smallest acts of kindness can change the world—one step at a time."
-     </p>
-     <a href="index.html" style="margin-top: 20px; display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 8px;">⬅️ Return to Menu</a>
-     </div>
-      document.getElementById("finalMessage").classList.remove("hidden");
 
+        // Show final message after short delay
+        setTimeout(() => {
+          finalMessage.style.display = 'block';
+        }, 2000);
+      }, 300);
     }
   </script>
 </body>
