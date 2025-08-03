@@ -149,28 +149,30 @@
     }
 
     function showNext() {
-      if (!musicStarted) {
-        music.play().catch(e => console.log("Audio play failed:", e));
-        musicStarted = true;
-      }
+  if (!musicStarted) {
+    music.play().then(() => {
+      musicStarted = true;
+    }).catch(e => {
+      console.warn("Autoplay blocked, user must interact again:", e);
+    });
+  }
 
-      if (index < story.length) {
-        storyBox.classList.remove('visible');
-        setTimeout(() => {
-          storyBox.innerHTML = story[index];
-          storyBox.classList.add('visible');
-          index++;
+  if (index < story.length) {
+    storyBox.classList.remove('visible');
+    setTimeout(() => {
+      storyBox.innerHTML = story[index];
+      storyBox.classList.add('visible');
+      index++;
 
-          // Changer le bouton "Start" après le premier clic
-          if (index > 0) {
-            nextBtn.innerText = "Next";
-          }
-        }, 300);
-      } else {
-        nextBtn.classList.add('hidden');
-        showChoices();
+      if (index > 0) {
+        nextBtn.innerText = "Next";
       }
-    }
+    }, 300);
+  } else {
+    nextBtn.classList.add('hidden');
+    showChoices();
+  }
+}
 
     function showChoices() {
       choices.classList.remove('hidden');
