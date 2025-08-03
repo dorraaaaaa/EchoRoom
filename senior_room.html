@@ -111,7 +111,7 @@
     </p>
     <a href="index.html">⬅️ Return to Menu</a>
   </div>
-  <button id="musicBtn" class="btn" onclick="toggleMusic()">🎵 Toggle Music</button>
+  <button id="musicBtn" class="btn" onclick="toggleMusic()">🔊 Music On/Off</button>
 
   <audio id="bg-music" loop>
     <source src="https://cdn.pixabay.com/audio/2022/03/22/audio_48fa8b9b9c.mp3" type="audio/mpeg" />
@@ -138,24 +138,33 @@
     const music = document.getElementById('bg-music');
     const finalMessage = document.getElementById('finalMessage');
 
+    let musicStarted = false;
+
     function toggleMusic() {
       if (music.paused) {
-        music.play().catch(e => {
-          console.log("Audio play failed: ", e);
-        });
+        music.play().catch(e => console.log("Audio error:", e));
       } else {
         music.pause();
       }
     }
 
     function showNext() {
+      if (!musicStarted) {
+        music.play().catch(e => console.log("Audio play failed:", e));
+        musicStarted = true;
+      }
+
       if (index < story.length) {
         storyBox.classList.remove('visible');
         setTimeout(() => {
           storyBox.innerHTML = story[index];
           storyBox.classList.add('visible');
           index++;
-          if (index === 1) music.play();
+
+          // Changer le bouton "Start" après le premier clic
+          if (index > 0) {
+            nextBtn.innerText = "Next";
+          }
         }, 300);
       } else {
         nextBtn.classList.add('hidden');
@@ -185,7 +194,6 @@
         storyBox.classList.add('visible');
         choices.classList.add('hidden');
 
-        // Show final message after short delay
         setTimeout(() => {
           finalMessage.style.display = 'block';
         }, 2000);
