@@ -55,6 +55,7 @@
       border: none;
     }
   </style>
+
 </head>
 <body>
   <h1>Welcome to EchoRooms</h1>
@@ -66,36 +67,54 @@
     <input type="text" id="chat-input" placeholder="Ask me something..." onkeypress="handleKeyPress(event)">
   </div>
 
-  <script>
-    function handleKeyPress(event) {
-      if (event.key === 'Enter') {
-        const input = document.getElementById('chat-input');
-        const log = document.getElementById('chat-log');
-        const userText = input.value.trim();
-        if (!userText) return;
+<script>
+  async function sendMessageToGPT(userMessage) {
+    const chatLog = document.getElementById("chat-log");
+    
+    // Affiche message utilisateur
+    const userDiv = document.createElement("div");
+    userDiv.textContent = "🧍 You: " + userMessage;
+    chatLog.appendChild(userDiv);
 
-        const userDiv = document.createElement('div');
-        userDiv.textContent = "🧍 You: " + userText;
-        log.appendChild(userDiv);
+    // Appel API OpenAI
+    const responseDiv = document.createElement("div");
+    responseDiv.textContent = "🤖 Bot: typing...";
+    chatLog.appendChild(responseDiv);
 
-        const responseDiv = document.createElement('div');
-        let response = getBotResponse(userText);
-        responseDiv.textContent = "🤖 Bot: " + response;
-        log.appendChild(responseDiv);
+    const raw = {
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: userMessage }],
+    };
 
-        input.value = "";
-        log.scrollTop = log.scrollHeight;
-      }
+    try {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openaiApiKey}`,
+        },
+        body: JSON.stringify(raw),
+      });
+
+      const data = await res.json();
+      const reply = data.choices?.[0]?.message?.content || "Sorry, I didn’t get that.";
+      responseDiv.textContent = "🤖 Bot: " + reply;
+      chatLog.scrollTop = chatLog.scrollHeight;
+    } catch (error) {
+      responseDiv.textContent = "❌ Bot: Error contacting AI.";
     }
+  }
 
-    function getBotResponse(input) {
-      input = input.toLowerCase();
-      if (input.includes("hello") || input.includes("hi")) return "Hi there! 👋";
-      if (input.includes("room") || input.includes("experience")) return "You can explore different EchoRooms to feel different realities.";
-      if (input.includes("senior")) return "The Senior Room shows what loneliness feels like for the elderly.";
-      if (input.includes("help")) return "Sure! You can ask about rooms or how to take action.";
-      return "I'm here to guide you through EchoRooms 🌍";
+  function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      const input = document.getElementById("chat-input");
+      const userText = input.value.trim();
+      if (!userText) return;
+      input.value = "";
+      sendMessageToGPT(userText);
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
