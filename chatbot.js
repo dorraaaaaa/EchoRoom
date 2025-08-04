@@ -23,3 +23,4 @@ async function sendMessageToGPT(userMessage) {
     responseDiv.textContent = "❌ Bot: Error contacting AI.";
   }
 }
+
