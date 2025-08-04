@@ -2,217 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Empty Chair</title>
+  <title>EchoRooms – Menu</title>
   <style>
     body {
-      margin: 0;
-      background: linear-gradient(-45deg, #1e3c72, #2a5298, #4a6fa5, #1b2735);
-      background-size: 400% 400%;
-      animation: gradientBG 20s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffe6f0;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .door {
+      display: inline-block;
+      background: #ffb3cc;
+      padding: 15px 30px;
+      margin: 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    /* Chatbot Styles */
+    #chat-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background: #1e3c72;
+      border: 1px solid #999;
+      border-radius: 10px;
+      padding: 10px;
       color: white;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    #chat-log {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      text-align: left;
     }
 
-    #storyBox {
-      max-width: 600px;
-      font-size: 1.3em;
-      margin-bottom: 30px;
-      opacity: 0;
-      transition: opacity 0.6s ease;
+    #chat-log div {
+      margin: 5px 0;
     }
 
-    #storyBox.visible {
-      opacity: 1;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      margin: 10px;
-      background-color: #444;
-      color: white;
+    #chat-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #666;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    #choices button {
-      display: block;
-      margin: 10px auto;
-      width: 80%;
-      max-width: 300px;
-    }
-
-    audio {
-      display: none;
-    }
-
-    #musicBtn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #222;
-    }
-
-    #finalMessage {
-      display: none;
-      text-align: center;
-      padding: 20px;
-    }
-
-    #finalMessage p {
-      font-size: 18px;
-      color: #ffffff;
-      max-width: 600px;
-      margin: auto;
-    }
-
-    #finalMessage a {
-      margin-top: 20px;
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <div id="storyBox">Click "Start" to begin the story...</div>
-  <button id="nextBtn" class="btn" onclick="showNext()">Start</button>
-  <div id="choices" class="hidden"></div>
-  <div id="finalMessage">
-    <p>
-      "You stepped into the life of a lonely senior, and I hope you caught a glimpse of how difficult it can be for them to face each day alone.
-      Remember, even the smallest acts of kindness can change the world—one step at a time."
-    </p>
-    <a href="index.html">⬅️ Return to Menu</a>
-  </div>
-  <button id="musicBtn" class="btn" onclick="toggleMusic()">🔊 Music On/Off</button>
+  <h1>Welcome to EchoRooms</h1>
+  <a href="senior_room.html" class="door">🚌 The Senior's Room</a>
 
-  <audio id="bg-music" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/03/22/audio_48fa8b9b9c.mp3" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
+  <!-- Chatbot -->
+  <div id="chat-container">
+    <div id="chat-log"></div>
+    <input type="text" id="chat-input" placeholder="Ask me something..." onkeypress="handleKeyPress(event)">
+  </div>
 
   <script>
-    const story = [ 
-      "You step into a living room wrapped in stillness. The clock ticks — each second a small reminder of absence.",
-      "A photo frame rests quietly on the mantle: a woman, her husband, children — frozen smiles from a distant past.",
-      "She prepares tea for one. No voices fill the room. Just the sound of boiling water and waiting.",
-      "‘Maybe today they’ll remember,’ she whispers, pouring into a cup she may not finish.",
-      "But silence is louder than any reply.",
-      "Her fingers scroll through a glowing screen. Weddings, holidays, lives moving forward — without her.",
-      "A whisper in her mind: 'Did I fade... or was I simply erased?'",
-      "The phone rings. A gasp — a flicker of hope. But it’s a wrong number. Silence, again.",
-      "She lowers her gaze. The light in her eyes dims. Somewhere inside you, something stirs — a question: will you let her fade alone?"
-    ];
+    async function sendMessageToGPT(userMessage) {
+      const chatLog = document.getElementById("chat-log");
+      const userDiv = document.createElement("div");
+      userDiv.textContent = "🧝 You: " + userMessage;
+      chatLog.appendChild(userDiv);
 
-    let index = 0;
-    const storyBox = document.getElementById('storyBox');
-    const nextBtn = document.getElementById('nextBtn');
-    const choices = document.getElementById('choices');
-    const music = document.getElementById('bg-music');
-    const finalMessage = document.getElementById('finalMessage');
+      const responseDiv = document.createElement("div");
+      responseDiv.textContent = "🤖 Bot: typing...";
+      chatLog.appendChild(responseDiv);
 
-    let musicStarted = false;
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
 
-    function toggleMusic() {
-      if (music.paused) {
-        music.play().catch(e => console.log("Audio error:", e));
-      } else {
-        music.pause();
+        const data = await res.json();
+        responseDiv.textContent = "🤖 Bot: " + (data.reply || "Sorry, I didn’t get that.");
+        chatLog.scrollTop = chatLog.scrollHeight;
+      } catch (error) {
+        responseDiv.textContent = "❌ Bot: Error contacting server.";
       }
     }
 
-    function showNext() {
-  if (!musicStarted) {
-    music.play().then(() => {
-      musicStarted = true;
-    }).catch(e => {
-      console.warn("Autoplay blocked, user must interact again:", e);
-    });
-  }
-
-  if (index < story.length) {
-    storyBox.classList.remove('visible');
-    setTimeout(() => {
-      storyBox.innerHTML = story[index];
-      storyBox.classList.add('visible');
-      index++;
-
-      if (index > 0) {
-        nextBtn.innerText = "Next";
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        const input = document.getElementById("chat-input");
+        const userText = input.value.trim();
+        if (!userText) return;
+        input.value = "";
+        sendMessageToGPT(userText);
       }
-    }, 300);
-  } else {
-    nextBtn.classList.add('hidden');
-    showChoices();
-  }
-}
-
-    function showChoices() {
-      choices.classList.remove('hidden');
-      choices.innerHTML = `
-        <button class="btn" onclick="showOutcome('call')">📞 Call your grandmother</button>
-        <button class="btn" onclick="showOutcome('visit')">🏡 Visit a retirement home</button>
-        <button class="btn" onclick="showOutcome('ignore')">🚪 Walk away silently</button>
-      `;
-    }
-
-    function showOutcome(choice) {
-      storyBox.classList.remove('visible');
-      setTimeout(() => {
-        if (choice === 'call') {
-          storyBox.innerHTML = "Your voice reaches someone who hasn’t smiled in days. You made a difference.";
-        } else if (choice === 'visit') {
-          storyBox.innerHTML = "You walk in — eyes light up. A simple visit becomes someone’s brightest day.";
-        } else {
-          storyBox.innerHTML = "You walk away. Her silence deepens. And something inside you feels colder.";
-        }
-        storyBox.classList.add('visible');
-        choices.classList.add('hidden');
-
-        setTimeout(() => {
-          finalMessage.style.display = 'block';
-        }, 2000);
-      }, 300);
     }
   </script>
-
-  <script>
-  // Autoriser la musique dès qu'il y a interaction (ex: premier clic sur la page)
-  window.addEventListener('click', () => {
-    if (!musicStarted) {
-      music.play().then(() => {
-        musicStarted = true;
-      }).catch(() => {});
-    }
-  }, { once: true });
-</script>
-
 </body>
 </html>
