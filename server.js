@@ -1,39 +1,43 @@
 // server.js
-// server.js
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const { Configuration, OpenAIApi } = require('openai');
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import path from "path";
+import { fileURLToPath } from "url";
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3000;
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public"))); // sert le dossier public
 
-app.use(express.static('public'));
-app.use(bodyParser.json());
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-const openai = new OpenAIApi(
-  new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  })
-);
+// Route pour chatbot
+app.post("/chat", async (req, res) => {
+  const userMessage = req.body.message;
 
-app.post('/chat', async (req, res) => {
   try {
-    const userMessage = req.body.message;
-
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: userMessage }],
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: userMessage }],
     });
 
-    const botReply = completion.data.choices[0].message.content;
-    res.json({ reply: botReply });
+    res.json({ reply: completion.choices[0].message.content });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ reply: 'Erreur serveur 😢' });
+    console.error("Erreur OpenAI :", err);
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
-app.listen(port, () => {
-  console.log(`✅ Serveur en ligne sur http://localhost:${port}`);
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Serveur lancé sur http://localhost:${PORT}`);
 });
