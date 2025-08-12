@@ -1,3 +1,35 @@
-function nextMessage() {
-  document.getElementById("choices").style.display = "block";
+async function sendMessageToGPT(userMessage) {
+  const chatLog = document.getElementById("chat-log");
+
+  const userDiv = document.createElement("div");
+  userDiv.textContent = "🧍 You: " + userMessage;
+  chatLog.appendChild(userDiv);
+
+  const responseDiv = document.createElement("div");
+  responseDiv.textContent = "🤖 Bot: typing...";
+  chatLog.appendChild(responseDiv);
+
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage }),
+    });
+
+    const data = await res.json();
+    responseDiv.textContent = "🤖 Bot: " + data.reply;
+    chatLog.scrollTop = chatLog.scrollHeight;
+  } catch {
+    responseDiv.textContent = "❌ Bot: Error contacting AI.";
+  }
+}
+
+function handleKeyPress(event) {
+  if (event.key === "Enter") {
+    const input = document.getElementById("chat-input");
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    sendMessageToGPT(text);
+  }
 }
