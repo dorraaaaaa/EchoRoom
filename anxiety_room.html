@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EchoRooms – Anxiety Support</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #d6eaf8;
+      text-align: center;
+      padding-top: 50px;
+    }
+    h1 {
+      color: #154360;
+    }
+    p {
+      max-width: 500px;
+      margin: 20px auto;
+      color: #1b4f72;
+      font-size: 18px;
+    }
+    #chat-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background: #154360;
+      border-radius: 10px;
+      padding: 10px;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    #chat-log {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    #chat-log div {
+      margin: 5px 0;
+    }
+    #chat-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>💙 Anxiety Support Room</h1>
+  <p>You are not alone. This space is here to help you feel calmer and supported.  
+  Take a deep breath — we’re here for you.</p>
+
+  <div id="chat-container">
+    <div id="chat-log"></div>
+    <input type="text" id="chat-input" placeholder="Share your thoughts..." onkeypress="handleKeyPress(event)">
+  </div>
+
+  <script>
+    async function sendMessageToGPT(userMessage) {
+      const chatLog = document.getElementById("chat-log");
+      const userDiv = document.createElement("div");
+      userDiv.textContent = "🧝 You: " + userMessage;
+      chatLog.appendChild(userDiv);
+
+      const responseDiv = document.createElement("div");
+      responseDiv.textContent = "🤖 Bot: typing...";
+      chatLog.appendChild(responseDiv);
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: "You are a kind and calming assistant. " + userMessage })
+        });
+
+        const data = await res.json();
+        responseDiv.textContent = "🤖 Bot: " + (data.reply || "Sorry, I didn’t get that.");
+        chatLog.scrollTop = chatLog.scrollHeight;
+      } catch (error) {
+        responseDiv.textContent = "❌ Bot: Error contacting server.";
+      }
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        const input = document.getElementById("chat-input");
+        const userText = input.value.trim();
+        if (!userText) return;
+        input.value = "";
+        sendMessageToGPT(userText);
+      }
+    }
+  </script>
+</body>
+</html>
+
